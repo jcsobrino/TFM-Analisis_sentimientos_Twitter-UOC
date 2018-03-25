@@ -4,7 +4,7 @@ import csv
 class DatasetConverter:
 
     @staticmethod
-    def generalformattolist(filename):
+    def general_format_to_list(filename):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -19,7 +19,7 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def politicsformattolist(filename):
+    def politics_format_to_list(filename):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -36,7 +36,7 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def intertassformattolist(filename, qrel=None):
+    def intertass_format_to_list(filename, qrel=None):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -53,7 +53,7 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def goldstandardtodict(filename):
+    def gold_standard_to_dict(filename):
         with open(filename, 'r') as csvfile:
             reader = csv.reader(csvfile, delimiter='\t')
             data = {rows[0]: rows[1] for rows in reader}
@@ -61,20 +61,20 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def listtocsv(data, filename):
+    def list_to_csv(data, filename):
         with open(filename, 'w', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile, delimiter=',', lineterminator='\n', quoting=csv.QUOTE_NONNUMERIC)
             writer.writerows(data)
 
 
-qrel = DatasetConverter.goldstandardtodict("datasets/intertass-sentiment.qrel")
+qrel = DatasetConverter.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
 data = []
-data.extend(DatasetConverter.generalformattolist("datasets/general-test-tagged-3l.xml"))
-data.extend(DatasetConverter.generalformattolist("datasets/general-train-tagged-3l.xml"))
-data.extend(DatasetConverter.intertassformattolist("datasets/intertass-development-tagged.xml"))
-data.extend(DatasetConverter.intertassformattolist("datasets/intertass-test.xml", qrel))
-data.extend(DatasetConverter.intertassformattolist("datasets/intertass-train-tagged.xml"))
-data.extend(DatasetConverter.politicsformattolist("datasets/politics-test-tagged.xml"))
+data.extend(DatasetConverter.general_format_to_list("datasets/general-test-tagged-3l.xml"))
+data.extend(DatasetConverter.general_format_to_list("datasets/general-train-tagged-3l.xml"))
+data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-development-tagged.xml"))
+data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-test.xml", qrel))
+data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-train-tagged.xml"))
+data.extend(DatasetConverter.politics_format_to_list("datasets/politics-test-tagged.xml"))
 
-DatasetConverter.listtocsv(data, 'datasets/global_dataset.csv')
+DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
