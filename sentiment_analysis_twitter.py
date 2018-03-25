@@ -45,8 +45,8 @@ def preprocessor(text):
     return text
     #return re.sub(r'(@|#|https?:)\S+', '', text)
 
-data, labels = readData("datasets/general-train-tagged-3l.xml")
-data_test, labels_test = readData("datasets/general-test-tagged-3l.xml")
+data, labels = readData("datasets/general-test-tagged-3l.xml")
+data_test, labels_test = readData("datasets/general-train-tagged-3l.xml")
 
 positive_words = Counter(readLexicon("iSOL/positivas_mejorada.csv"))
 negative_words = Counter(readLexicon("iSOL/negativas_mejorada.csv"))
