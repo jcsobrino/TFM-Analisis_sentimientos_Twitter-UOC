@@ -1,114 +1,62 @@
-import xml.etree.ElementTree as etree
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.metrics import classification_report
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.svm import LinearSVC
-from nltk.tokenize import word_tokenize
-from sklearn.naive_bayes import MultinomialNB
-from nltk.corpus import stopwords
-import numpy as np
+import csv
 import re
-import unidecode
-import nltk.tokenize
-from collections import Counter
-from stanfordcorenlp import StanfordCoreNLP
 
-nlp = StanfordCoreNLP('http://localhost', port=9000, lang='es')
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.svm import LinearSVC
+
+stemmer = SnowballStemmer('spanish')
 spanish_stopwords = stopwords.words('spanish')
+analyzer = CountVectorizer().build_analyzer()
 
-def readData(xmlfile):
-    tree = etree.parse(xmlfile)
-    root = tree.getroot()
+def read_corpus(filename):
     data = []
-    labels = []
+    label = []
+    with open(filename, 'r', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            data.append(row[1])
+            label.append(row[2])
+    return data[:500], label[:500]
 
-    for tweet in root:
-        text = tweet.find('content').text
-        label = tweet.find('sentiments/polarity/value').text
-        data.append(text)
-        labels.append(label)
 
-    return data, labels
-
-def readLexicon(filename):
+def read_lexicon(filename):
     with open(filename, 'r') as file:
         lines = [line.strip() for line in file]
     return lines
 
-def preprocessor(text):
+
+def preprocess_corpus_example(example):
     # text = re.sub(r'@\S+', '_user', text)
     # text = re.sub(r'#\S+', '_hashtag', text)
     # text = re.sub(r'https?:\S+', '_url', text)
-    text = re.sub(r'(.)\1+', r'\1', text)
-    return text
-    #return re.sub(r'(@|#|https?:)\S+', '', text)
-
-data, labels = readData("datasets/general-test-tagged-3l.xml")
-data_test, labels_test = readData("datasets/general-train-tagged-3l.xml")
-
-positive_words = Counter(readLexicon("iSOL/positivas_mejorada.csv"))
-negative_words = Counter(readLexicon("iSOL/negativas_mejorada.csv"))
-
-# text_clf = Pipeline([('vect', CountVectorizer(strip_accents='unicode',
-#                                               analyzer ='word',
-#                                               #preprocessor=preprocessor,
-#                                               ngram_range=(1,3),
-#                                               lowercase = True)),
-#                      ('tfidf', TfidfTransformer()),
-#                      ('clf', LinearSVC()),
-# ])
-
-def get_lexicon_score(text):
-    result = []
-    for t in text:
-        t = t.lower()
-        t = unidecode.unidecode(t)  # hay una mejora cuando se eliminan tildes
-        #t = preprocessor(t)
-        tokens = nltk.word_tokenize(t)
-        pos = len(list((Counter(tokens) & positive_words).elements()))
-        neg = len(list((Counter(tokens) & negative_words).elements()))
-        #result.append((pos,neg))
-        result.append([pos, neg])
-
-    return result
+    example = re.sub(r'(.)\1+', r'\1', example)
+    return example
+    # return re.sub(r'(@|#|https?:)\S+', '', text)
 
 
-def get_pos_data(text):
-    result = []
-    temp = []
-    for t in text:
-        temp.append(nlp.pos_tag(t))
-    for t in temp:
-        result.append(' '.join([y for x,y in t]))
-    return result
+def stemmed_words(doc):
+    return (stemmer.stem(w) for w in analyzer(doc))
 
-text_clf = Pipeline([
-    ('features', FeatureUnion([
-        ('ngram_tf_idf', Pipeline([
-            ('vect', CountVectorizer(strip_accents='unicode',
-                                     #preprocessor=preprocessor,
-                                              analyzer ='word',
-                                              ngram_range=(1,3),
-                                              lowercase = True)),
-            ('tfidf', TfidfTransformer())
-        ])),
-        ('ngram_postag_tf_idf', Pipeline([
-            ('pos', FunctionTransformer(get_pos_data, validate=False)),
-            ('vect_postag', CountVectorizer(analyzer ='word',
-                                            ngram_range=(1,3),
-                                            lowercase= False)),
-            ('tfidf_posttag', TfidfTransformer())
-        ])),
-        ('lexicon', FunctionTransformer(get_lexicon_score, validate=False))
-    ])),
-    ('clf', LinearSVC()),
-])
+data, label = read_corpus("datasets/global_dataset.csv")
 
+pipeline = Pipeline([('vect', CountVectorizer(strip_accents='unicode',
+                                              analyzer='word',
+                                              preprocessor=preprocess_corpus_example,
+                                              lowercase=True)),
+                     ('clf', LinearSVC()),
+                     ])
 
-text_clf.fit(data, labels)
-predicted = text_clf.predict(data_test)
+parameters = {
+    'vect__analyzer': ('word', stemmed_words),
+    'vect__binary': (True, False),
+    'vect__stop_words': (None, spanish_stopwords, [])
+}
 
-print(np.mean(predicted == labels_test))
-print(classification_report(labels_test, predicted, list(set(labels))))
+grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1, cv=10)
+grid_search.fit(data, label)
+print("best_params:",grid_search.best_params_)
+print("best_score:", grid_search.best_score_)
