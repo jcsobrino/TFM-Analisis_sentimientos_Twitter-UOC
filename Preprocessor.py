@@ -39,3 +39,9 @@ class Preprocessor:
             message = ' '.join(self._stemmer.stem(w) for w in message.split())
 
         return message
+
+    def __repr__(self):
+        return "Preprocessor([strip_accents={0}, twitter_symbols={1}, stemming={2}])".format(self.strip_accents, self.twitter_symbols, self.stemming)
+
+    def __str__(self):
+        return "Preprocessor([strip_accents={0}, twitter_symbols={1}, stemming={2}])".format(self.strip_accents, self.twitter_symbols, self.stemming)

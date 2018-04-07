@@ -1,6 +1,7 @@
 import csv
 
 import pandas as pd
+import time
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
@@ -50,10 +51,11 @@ parameters = [
     }
 ]
 if __name__ == '__main__':
-    skf = StratifiedKFold(n_splits=5, shuffle=True)
-    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=3, cv=skf, verbose=1, scoring=scoring, refit='f1_micro')
+    skf = StratifiedKFold(n_splits=10, shuffle=True)
+    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_micro')
     grid_search.fit(data, label)
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
     print(pd.DataFrame(grid_search.cv_results_).to_string())
+    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time()))+'.csv', quoting=csv.QUOTE_NONNUMERIC)
 
