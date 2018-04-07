@@ -7,7 +7,7 @@ class Preprocessor:
 
     _stemmer = SnowballStemmer('spanish')
 
-    def __init__(self, strip_accents=False, twitter_symbols=None, stemming=False):
+    def __init__(self, strip_accents=True, twitter_symbols='normalize', stemming=False):
         self.strip_accents = strip_accents
         self.twitter_symbols = twitter_symbols
         self.stemming = stemming
@@ -27,9 +27,9 @@ class Preprocessor:
             message = re.sub(r'(@|#|https?:)\S+', '', message)
         elif self.twitter_symbols == 'normalize':
             # normalize mentions, hashtags and urls
-            message = re.sub(r'@\S+', '_user_', message)
-            message = re.sub(r'#\S+', '_hashtag_', message)
-            message = re.sub(r'https?:\S+', '_url_', message)
+            message = re.sub(r'@\S+', '_mention', message)
+            message = re.sub(r'#\S+', '_hashtag', message)
+            message = re.sub(r'https?:\S+', '_url', message)
 
         # remove repeated characters
         message = re.sub(r'([^clnr])\1+', r'\1', message)
