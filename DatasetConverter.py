@@ -86,5 +86,7 @@ data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-test.x
 data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-train-tagged.xml"))
 data.extend(DatasetConverter.politics_format_to_list("datasets/politics-test-tagged.xml"))
 
-DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
+subset = DatasetConverter.generate_subset(data, size=0.3)
 
+DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
+DatasetConverter.list_to_csv(data, 'datasets/subset_dataset_30.csv')
