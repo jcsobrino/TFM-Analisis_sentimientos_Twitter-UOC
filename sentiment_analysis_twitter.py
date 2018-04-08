@@ -4,6 +4,7 @@ import time
 import pandas as pd
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
@@ -29,7 +30,7 @@ def read_corpus(filename):
 # complete global corpus
 global_data, global_label = read_corpus("datasets/global_dataset.csv")
 
-# subset global corpus for training (10%)
+# subset global corpus for training (20%)
 X_train, X_test, y_train, y_test = train_test_split(global_data, global_label, train_size=0.2)
 
 scoring = {'accuracy': 'accuracy',
@@ -63,7 +64,7 @@ parameters = [
                                Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
                                Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
-        'clf':(LinearSVC(),)
+        'clf':(MultinomialNB(), KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC(), SGDClassifier())
     }
 ]
 
