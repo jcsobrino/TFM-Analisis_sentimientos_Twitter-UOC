@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as etree
 import csv
 
+from sklearn.model_selection import train_test_split
+
+
 class DatasetConverter:
 
     @staticmethod
@@ -66,6 +69,12 @@ class DatasetConverter:
             writer = csv.writer(csvfile, delimiter=',', lineterminator='\n', quoting=csv.QUOTE_NONNUMERIC)
             writer.writerows(data)
 
+    @staticmethod
+    def generate_subset(data, size):
+        codes = [d[0] for d in data]
+        labels = [d[2] for d in data]
+        codes_train, codes_test, labels_train, labels_test = train_test_split(codes, labels, train_size=size)
+        return [d for d in data if d[0] in codes_train]
 
 qrel = DatasetConverter.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
@@ -78,3 +87,4 @@ data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-train-
 data.extend(DatasetConverter.politics_format_to_list("datasets/politics-test-tagged.xml"))
 
 DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
+

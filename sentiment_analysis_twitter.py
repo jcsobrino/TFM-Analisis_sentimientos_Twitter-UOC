@@ -18,20 +18,17 @@ from Preprocessor import Preprocessor
 spanish_stopwords = stopwords.words('spanish')
 
 def read_corpus(filename):
-    data = []
+    message = []
     label = []
     with open(filename, 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
-            data.append(row[1])
+            message.append(row[1])
             label.append(row[2])
-    return data, label
+    return message, label
 
-# complete global corpus
-global_data, global_label = read_corpus("datasets/global_dataset.csv")
-
-# subset global corpus for training (20%)
-X_train, X_test, y_train, y_test = train_test_split(global_data, global_label, train_size=0.2)
+# corpus data
+message, label = read_corpus("datasets/global_dataset.csv")
 
 scoring = {'accuracy': 'accuracy',
            'precision_macro': 'precision_macro',
@@ -46,7 +43,6 @@ scoring = {'accuracy': 'accuracy',
 
 pipeline = Pipeline([('vect', None),
                     ('clf', None)])
-
 
 weighted_binary = CountVectorizer(binary=True)
 weighted_absolute = CountVectorizer(binary=False)
@@ -64,14 +60,14 @@ parameters = [
                                Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
                                Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
-        'clf':(MultinomialNB(), KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC(), SGDClassifier())
+        'clf':(MultinomialNB(), KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC())
     }
 ]
 
 if __name__ == '__main__':
     skf = StratifiedKFold(n_splits=10, shuffle=True)
     grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_weighted')
-    grid_search.fit(X_train, y_train)
+    grid_search.fit(message, label)
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
     print(pd.DataFrame(grid_search.cv_results_).to_string())
