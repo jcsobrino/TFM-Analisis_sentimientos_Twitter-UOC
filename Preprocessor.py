@@ -22,7 +22,7 @@ class Preprocessor:
         message = re.sub(r'(\d+|\n|\brt\b)', '', message)
         # remove repeated characters
         message = re.sub(r'([^clnr])\1+', r'\1', message)
-        message = re.sub(r'([clnr])\1{3,}', r'\1\1', message)
+        message = re.sub(r'([clnr])\1{2,}', r'\1\1', message)
         # normalized laughs
         message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', '_laugh', message)
         # normalized slang
