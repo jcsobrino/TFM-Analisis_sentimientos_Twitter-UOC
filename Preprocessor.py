@@ -10,7 +10,7 @@ class Preprocessor:
               ('fvr','favor'),('(xfa|xf|pf|plis|pls|porfa)', 'por favor'), ('dnd','donde'), ('lol', '_laugh'), ('tb', 'también'),
               ('(tq|tk)', 'te quiero'), ('(tqm|tkm)', 'te quiero mucho'), ('x','por')]
 
-    def __init__(self, strip_accents=True, twitter_symbols='normalize', stemming=False):
+    def __init__(self, strip_accents=True, twitter_symbols=None, stemming=False):
         self.strip_accents = strip_accents
         self.twitter_symbols = twitter_symbols
         self.stemming = stemming

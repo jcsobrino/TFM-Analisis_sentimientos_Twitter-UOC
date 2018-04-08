@@ -1,10 +1,11 @@
 import csv
+import time
 
 import pandas as pd
-import time
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
@@ -25,7 +26,11 @@ def read_corpus(filename):
             label.append(row[2])
     return data, label
 
-data, label = read_corpus("datasets/global_dataset.csv")
+# complete global corpus
+global_data, global_label = read_corpus("datasets/global_dataset.csv")
+
+# subset global corpus for training (10%)
+X_train, X_test, y_train, y_test = train_test_split(global_data, global_label, train_size=0.1)
 
 scoring = {'accuracy': 'accuracy',
            'precision_macro': 'precision_macro',
@@ -44,16 +49,19 @@ parameters = [
                  CountVectorizer(binary=True),
                  TfidfVectorizer(use_idf=False),
                  TfidfVectorizer(use_idf=True)),
-        'vect__preprocessor': (Preprocessor(stemming=False).preprocess,
-                               Preprocessor(stemming=True).preprocess),
+        'vect__preprocessor': (Preprocessor(twitter_symbols='remove', stemming=False).preprocess,
+                               Preprocessor(twitter_symbols='remove', stemming=True).preprocess,
+                               Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
+                               Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
-        'clf':(MultinomialNB(), KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC())
+        'clf':(LinearSVC(),)
     }
 ]
+
 if __name__ == '__main__':
-    skf = StratifiedKFold(n_splits=10, shuffle=True)
+    skf = StratifiedKFold(n_splits=5, shuffle=True)
     grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_micro')
-    grid_search.fit(data, label)
+    grid_search.fit(X_train, y_train)
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
     print(pd.DataFrame(grid_search.cv_results_).to_string())
