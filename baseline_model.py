@@ -28,7 +28,7 @@ def read_corpus(filename):
     return message, label
 
 # corpus data
-message, label = read_corpus("datasets/global_dataset.csv")
+message, label = read_corpus("datasets/subset_dataset_30.csv")
 
 scoring = {'accuracy': 'accuracy',
            'precision_macro': 'precision_macro',
