@@ -30,7 +30,7 @@ def read_corpus(filename):
 global_data, global_label = read_corpus("datasets/global_dataset.csv")
 
 # subset global corpus for training (10%)
-X_train, X_test, y_train, y_test = train_test_split(global_data, global_label, train_size=0.1)
+X_train, X_test, y_train, y_test = train_test_split(global_data, global_label, train_size=0.2)
 
 scoring = {'accuracy': 'accuracy',
            'precision_macro': 'precision_macro',
@@ -38,17 +38,26 @@ scoring = {'accuracy': 'accuracy',
            'f1_macro': 'f1_macro',
            'precision_micro': 'precision_micro',
            'recall_micro': 'recall_micro',
-           'f1_micro': 'f1_micro'}
+           'f1_micro': 'f1_micro',
+           'precision_weighted': 'precision_weighted',
+           'recall_weighted': 'recall_weighted',
+           'f1_weighted': 'f1_weighted'}
 
 pipeline = Pipeline([('vect', None),
                     ('clf', None)])
 
+
+weighted_binary = CountVectorizer(binary=True)
+weighted_absolute = CountVectorizer(binary=False)
+weighted_terms_frequency = TfidfVectorizer(use_idf=False)
+weighted_tfidf = TfidfVectorizer(use_idf=True)
+
 parameters = [
     {
-        'vect': (CountVectorizer(binary=False),
-                 CountVectorizer(binary=True),
-                 TfidfVectorizer(use_idf=False),
-                 TfidfVectorizer(use_idf=True)),
+        'vect': (weighted_binary,
+                 weighted_absolute,
+                 weighted_terms_frequency,
+                 weighted_tfidf),
         'vect__preprocessor': (Preprocessor(twitter_symbols='remove', stemming=False).preprocess,
                                Preprocessor(twitter_symbols='remove', stemming=True).preprocess,
                                Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
@@ -59,8 +68,8 @@ parameters = [
 ]
 
 if __name__ == '__main__':
-    skf = StratifiedKFold(n_splits=5, shuffle=True)
-    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_micro')
+    skf = StratifiedKFold(n_splits=10, shuffle=True)
+    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_weighted')
     grid_search.fit(X_train, y_train)
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
