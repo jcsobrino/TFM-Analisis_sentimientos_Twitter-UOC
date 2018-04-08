@@ -1,7 +1,7 @@
 import re
 
 from nltk.stem import SnowballStemmer
-from sklearn.feature_extraction.text import strip_accents_unicode
+
 
 class Preprocessor:
 
