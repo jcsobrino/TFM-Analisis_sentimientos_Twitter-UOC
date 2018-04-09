@@ -58,9 +58,11 @@ parameters = [
                                Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
                                Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
-        'clf':(MultinomialNB(), KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC())
+        'clf':(MultinomialNB(), )
     }
 ]
+
+# KNeighborsClassifier(), DecisionTreeClassifier(), LinearSVC()
 
 if __name__ == '__main__':
     skf = StratifiedKFold(n_splits=10, shuffle=True)
