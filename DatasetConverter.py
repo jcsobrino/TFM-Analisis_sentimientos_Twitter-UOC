@@ -16,7 +16,6 @@ class DatasetConverter:
             tweetId = tweet.find('tweetid').text
             content = tweet.find('content').text
             polarityValue = tweet.find('sentiments/polarity/value').text
-            #polarityType = tweet.find('sentiments/polarity/type').text
             data.append([tweetId, content.replace('\n',' '), polarityValue])
 
         return data
@@ -33,7 +32,6 @@ class DatasetConverter:
             aux = next((e for e in tweet.findall('sentiments/polarity') if e.find('entity') == None), None)
             if aux != None:
                 polarityValue = aux.find('value').text
-                #polarityType = aux.find('type').text
                 data.append([tweetId, content.replace('\n',' '), polarityValue])
 
         return data
@@ -70,11 +68,13 @@ class DatasetConverter:
             writer.writerows(data)
 
     @staticmethod
-    def generate_subset(data, size):
+    def generate_train_test_subsets(data, size):
         codes = [d[0] for d in data]
         labels = [d[2] for d in data]
         codes_train, codes_test, labels_train, labels_test = train_test_split(codes, labels, train_size=size)
-        return [d for d in data if d[0] in codes_train]
+        train_data = [d for d in data if d[0] in codes_train]
+        test_data = [d for d in data if d[0] in codes_test]
+        return train_data, test_data
 
 qrel = DatasetConverter.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
@@ -86,7 +86,8 @@ data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-test.x
 data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-train-tagged.xml"))
 data.extend(DatasetConverter.politics_format_to_list("datasets/politics-test-tagged.xml"))
 
-subset = DatasetConverter.generate_subset(data, size=0.3)
+train, test = DatasetConverter.generate_train_test_subsets(data, size=0.3)
 
-DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
-DatasetConverter.list_to_csv(data, 'datasets/subset_dataset_30.csv')
+#DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
+DatasetConverter.list_to_csv(train, 'datasets/train_dataset_30.csv')
+DatasetConverter.list_to_csv(test, 'datasets/test_dataset_30.csv')
