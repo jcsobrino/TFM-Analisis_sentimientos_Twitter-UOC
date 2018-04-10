@@ -26,7 +26,7 @@ def read_corpus(filename):
     return message, label
 
 # corpus data
-message, label = read_corpus("datasets/subset_dataset_30.csv")
+message, label = read_corpus("datasets/train_dataset_30.csv")
 
 scoring = {'accuracy': 'accuracy',
            'precision_macro': 'precision_macro',
@@ -58,7 +58,7 @@ parameters = [
                                Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
                                Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
-        'clf':(MultinomialNB(), )
+        'clf':(KNeighborsClassifier(), )
     }
 ]
 
@@ -71,5 +71,5 @@ if __name__ == '__main__':
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
     print(pd.DataFrame(grid_search.cv_results_).to_string())
-    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time()))+'.csv', quoting=csv.QUOTE_NONNUMERIC)
+    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf='knn.csv', quoting=csv.QUOTE_NONNUMERIC)
 
