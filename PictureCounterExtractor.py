@@ -1,8 +1,6 @@
-import csv
-
 import io
-from sklearn.base import BaseEstimator, TransformerMixin
 
+from sklearn.base import BaseEstimator, TransformerMixin
 
 class PictureCounterExtractor(BaseEstimator, TransformerMixin):
 

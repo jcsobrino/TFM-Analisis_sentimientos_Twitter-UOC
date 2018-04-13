@@ -66,7 +66,7 @@ parameters = [
 
 if __name__ == '__main__':
     skf = StratifiedKFold(n_splits=10, shuffle=True)
-    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=1, scoring=scoring, refit='f1_weighted')
+    grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=1, cv=skf, verbose=1, scoring=scoring, refit='f1_weighted')
     grid_search.fit(message, label)
     print("best_params:", grid_search.best_params_)
     print("best_score:", grid_search.best_score_)
