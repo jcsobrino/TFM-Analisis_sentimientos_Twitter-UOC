@@ -13,7 +13,7 @@ from util.Preprocessor import Preprocessor
 
 class LexiconExtractor(BaseEstimator, TransformerMixin):
 
-    _vector = DictVectorizer(sparse=False)
+    _vectorizer = None
     _ngram_length = 5
     _reverse = ['no', 'ni', 'apenas', 'nada', 'tampoco', 'nunca', 'ningun', 'ninguna', 'ninguno', 'nadie', 'jamas']
     _tokenizer = TweetTokenizer()
@@ -25,8 +25,12 @@ class LexiconExtractor(BaseEstimator, TransformerMixin):
         pass
 
     def transform(self, data, y=None):
-        res = [self.detect(tweet) for tweet in data]
-        return self._vector.fit_transform(res)
+        result = [self.detect(tweet) for tweet in data]
+        if self._vectorizer == None :
+            self._vectorizer = DictVectorizer(sparse=False)
+            self._vectorizer.fit(result)
+
+        return self._vectorizer.transform(result)
 
     def detect(self, text):
         res = []

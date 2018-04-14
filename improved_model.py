@@ -19,9 +19,9 @@ pipeline = Pipeline([
     ('feats', FeatureUnion([
         ('vect', TfidfVectorizer(use_idf=False,
                                  preprocessor=preprocessor)),
-        #('sentiment_symbol', SentimentSymbolExtractor()),
-        #('parts_of_speech', PartsOfSpeechExtractor()),
-        #('lexicon', LexiconExtractor()),
+        ('sentiment_symbol', SentimentSymbolExtractor()),
+        ('parts_of_speech', PartsOfSpeechExtractor()),
+        ('lexicon', LexiconExtractor()),
         #('twitter', TwitterExtractor())
     ])),
     ('clf', LinearSVC())
