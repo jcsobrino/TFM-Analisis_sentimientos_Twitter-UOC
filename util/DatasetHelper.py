@@ -4,10 +4,10 @@ import csv
 from sklearn.model_selection import train_test_split
 
 
-class DatasetConverter:
+class DatasetHelper:
 
     @staticmethod
-    def general_format_to_list(filename):
+    def general_tass_to_list(filename):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -21,7 +21,7 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def politics_format_to_list(filename):
+    def politics_tass_to_list(filename):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -37,7 +37,7 @@ class DatasetConverter:
         return data
 
     @staticmethod
-    def intertass_format_to_list(filename, qrel=None):
+    def intertass_tass_to_list(filename, qrel=None):
         tree = etree.parse(filename)
         root = tree.getroot()
         data = []
@@ -76,18 +76,18 @@ class DatasetConverter:
         test_data = [d for d in data if d[0] in codes_test]
         return train_data, test_data
 
-qrel = DatasetConverter.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
+qrel = DatasetHelper.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
 data = []
-data.extend(DatasetConverter.general_format_to_list("datasets/general-test-tagged-3l.xml"))
-data.extend(DatasetConverter.general_format_to_list("datasets/general-train-tagged-3l.xml"))
-data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-development-tagged.xml"))
-data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-test.xml", qrel))
-data.extend(DatasetConverter.intertass_format_to_list("datasets/intertass-train-tagged.xml"))
-data.extend(DatasetConverter.politics_format_to_list("datasets/politics-test-tagged.xml"))
+data.extend(DatasetHelper.general_tass_to_list("datasets/general-test-tagged-3l.xml"))
+data.extend(DatasetHelper.general_tass_to_list("datasets/general-train-tagged-3l.xml"))
+data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-development-tagged.xml"))
+data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-test.xml", qrel))
+data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-train-tagged.xml"))
+data.extend(DatasetHelper.politics_tass_to_list("datasets/politics-test-tagged.xml"))
 
-train, test = DatasetConverter.generate_train_test_subsets(data, size=0.3)
+train, test = DatasetHelper.generate_train_test_subsets(data, size=0.3)
 
-#DatasetConverter.list_to_csv(data, 'datasets/global_dataset.csv')
-DatasetConverter.list_to_csv(train, 'datasets/train_dataset_30.csv')
-DatasetConverter.list_to_csv(test, 'datasets/test_dataset_30.csv')
+DatasetHelper.list_to_csv(data, 'datasets/global_dataset.csv')
+DatasetHelper.list_to_csv(train, 'datasets/train_dataset_30.csv')
+DatasetHelper.list_to_csv(test, 'datasets/test_dataset_30.csv')

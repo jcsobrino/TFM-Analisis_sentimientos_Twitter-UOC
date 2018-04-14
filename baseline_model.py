@@ -1,17 +1,13 @@
 import csv
-import time
 
 import pandas as pd
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.svm import LinearSVC
-from sklearn.tree import DecisionTreeClassifier
 
-from Preprocessor import Preprocessor
+from util.Preprocessor import Preprocessor
 
 spanish_stopwords = stopwords.words('spanish')
 
@@ -53,10 +49,10 @@ parameters = [
                  weighted_absolute,
                  weighted_terms_frequency,
                  weighted_tfidf),
-        'vect__preprocessor': (Preprocessor(twitter_symbols='remove', stemming=False).preprocess,
-                               Preprocessor(twitter_symbols='remove', stemming=True).preprocess,
-                               Preprocessor(twitter_symbols='normalized', stemming=False).preprocess,
-                               Preprocessor(twitter_symbols='normalized', stemming=True).preprocess),
+        'vect__preprocessor': (Preprocessor(tweet_elements='remove', stemming=False).preprocess,
+                               Preprocessor(tweet_elements='remove', stemming=True).preprocess,
+                               Preprocessor(tweet_elements='normalized', stemming=False).preprocess,
+                               Preprocessor(tweet_elements='normalized', stemming=True).preprocess),
         'vect__stop_words': (None, spanish_stopwords),
         'clf':(KNeighborsClassifier(), )
     }

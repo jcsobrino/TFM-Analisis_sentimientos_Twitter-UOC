@@ -8,8 +8,8 @@ from baseline_model import read_corpus
 
 java_path = "C:/Program Files (x86)/Java/jre1.8.0_161/bin/java.exe"
 os.environ['JAVAHOME'] = java_path
-path_to_model = 'stanford_nlp/spanish.tagger'
-path_to_jar = 'stanford_nlp/stanford-postagger-3.8.0.jar'
+path_to_model = 'stanford-postagger/spanish.tagger'
+path_to_jar = 'stanford-postagger/stanford-postagger-3.8.0.jar'
 
 # message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
 # message_test, label_test = read_corpus("datasets/test_dataset_30.csv")

@@ -1,12 +1,11 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction import DictVectorizer
 
-from Preprocessor import Preprocessor
+from util.Preprocessor import Preprocessor
 
 
 class TwitterExtractor(BaseEstimator, TransformerMixin):
 
-    _processor = Preprocessor(twitter_symbols='normalize')
+    _normalizer = Preprocessor().normalize_tweet_elements
 
     def __init__(self):
         pass
@@ -15,8 +14,10 @@ class TwitterExtractor(BaseEstimator, TransformerMixin):
         res = []
 
         for d in data:
-            p = self._processor.preprocess(d)
-            res.append([p.count('_mention'), p.count('_url'), p.count('_hashtag')])
+            p = self._normalizer(d)
+            res.append([p.count('_mention'),
+                        p.count('_url'),
+                        p.count('_hashtag')])
 
         return res
 
