@@ -9,6 +9,7 @@ from LexiconExtractor import LexiconExtractor
 from POSExtractor import POSExtractor
 from PictureCounterExtractor import PictureCounterExtractor
 from Preprocessor import Preprocessor
+from TwitterExtractor import TwitterExtractor
 from baseline_model import read_corpus
 
 message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
@@ -22,7 +23,8 @@ pipeline = Pipeline([
                                  preprocessor=preprocessor)),
         ('picture', PictureCounterExtractor()),
         #('pos', POSExtractor()),
-        ('lexicon', LexiconExtractor())
+        ('lexicon', LexiconExtractor()),
+        ('abrev', TwitterExtractor())
     ])),
     ('clf', LinearSVC())
 ])

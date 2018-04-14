@@ -11,10 +11,10 @@ os.environ['JAVAHOME'] = java_path
 path_to_model = 'stanford_nlp/spanish.tagger'
 path_to_jar = 'stanford_nlp/stanford-postagger-3.8.0.jar'
 
-message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
-message_test, label_test = read_corpus("datasets/test_dataset_30.csv")
+# message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
+# message_test, label_test = read_corpus("datasets/test_dataset_30.csv")
 
-st = POS_Tag(model_filename=path_to_model, path_to_jar=path_to_jar)
+st = None #POS_Tag(model_filename=path_to_model, path_to_jar=path_to_jar)
 
 def save_pos(data, filename):
     t = TweetTokenizer()
