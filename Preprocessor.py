@@ -1,5 +1,6 @@
 import re
 
+from nltk import word_tokenize
 from nltk.stem import SnowballStemmer
 
 
@@ -42,7 +43,7 @@ class Preprocessor:
             message = re.sub(r'htt?ps?:\S+', '_url', message)
 
         if self.stemming:
-            message = ' '.join(self._stemmer.stem(w) for w in message.split())
+            message = ' '.join(self._stemmer.stem(w) for w in word_tokenize(message))
 
         return message
 
