@@ -14,12 +14,12 @@ from util.Preprocessor import Preprocessor
 class LexiconExtractor(BaseEstimator, TransformerMixin):
 
     _vectorizer = None
-    _ngram_length = 5
-    _reverse = ['no', 'ni', 'apenas', 'nada', 'tampoco', 'nunca', 'ningun', 'ninguna', 'ninguno', 'nadie', 'jamas']
+    _ngram_length = 3
+    _reverse = ['no', 'ni', 'tampoc', 'ningun']
     _tokenizer = TweetTokenizer()
-    _neg = io.open('lexicon/negative_words.csv').read().splitlines()
-    _pos = io.open('lexicon/positive_words.csv').read().splitlines()
-    _processor = Preprocessor(tweet_elements='remove')
+    _neg = io.open('lexicon/negative_words.txt').read().splitlines()
+    _pos = io.open('lexicon/positive_words.txt').read().splitlines()
+    _processor = Preprocessor(tweet_elements='remove', stemming=True)
 
     def __init__(self):
         pass
@@ -41,6 +41,7 @@ class LexiconExtractor(BaseEstimator, TransformerMixin):
         for ngram in aux:
             pre_words = ngram[:self._ngram_length-1]
             word = ngram[self._ngram_length-1]
+            #word = self._processor.stem(word)
 
             if word in self._pos:
                 if any(w in pre_words for w in self._reverse):

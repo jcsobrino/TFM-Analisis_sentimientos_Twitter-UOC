@@ -29,7 +29,7 @@ class Preprocessor:
         #message = re.sub(r'([^clnr])\1+', r'\1', message)
         #message = re.sub(r'([clnr])\1{2,}', r'\1\1', message)
         # normalized laughs
-        message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', '_laugh', message)
+        message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', 'LAUGH', message)
         # normalized slang
         for s,t in self._slang:
             message = re.sub(r'\b{0}\b'.format(s), t, message)
@@ -47,11 +47,14 @@ class Preprocessor:
             message = re.sub(r'(@|#|htt?ps?:)\S+', '', message)
         elif tweet_elements == 'normalize':
             # normalize mentions, hashtags and urls
-            message = re.sub(r'@\S+', '_mention', message)
-            message = re.sub(r'#\S+', '_hashtag', message)
-            message = re.sub(r'htt?ps?:\S+', '_url', message)
+            message = re.sub(r'@\S+', 'MENTION', message)
+            message = re.sub(r'#\S+', 'HASHTAG', message)
+            message = re.sub(r'htt?ps?:\S+', 'URL', message)
 
         return message
+
+    def stem(self, word):
+        return self._stemmer.stem(word)
 
     def normalize_tweet_elements(self, message):
         return self.process_tweet_elements(message, tweet_elements="normalize")

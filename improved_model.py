@@ -10,8 +10,8 @@ from util.Preprocessor import Preprocessor
 from extractors.TwitterExtractor import TwitterExtractor
 from baseline_model import read_corpus
 
-message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
-message_test, label_test = read_corpus("datasets/test_dataset_30.csv")
+message_train, label_train = read_corpus("datasets/standard_train_dataset.csv")
+message_test, label_test = read_corpus("datasets/standard_test_dataset.csv")
 
 preprocessor = Preprocessor(tweet_elements='normalize', stemming=False).preprocess
 

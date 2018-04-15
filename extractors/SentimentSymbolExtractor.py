@@ -20,7 +20,7 @@ class SentimentSymbolExtractor(BaseEstimator, TransformerMixin):
 
         for tweet in data:
             tweet = self._processor.preprocess(tweet)
-            result.append([sum(tweet.count(e) for e in self._pos) + tweet.count('_laugh'),
+            result.append([sum(tweet.count(e) for e in self._pos) + tweet.count('LAUGH'),
                            sum(tweet.count(e) for e in self._neg),
                            sum(tweet.count(e) for e in self._neu)])
 
