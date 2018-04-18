@@ -1,34 +1,39 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVC
 
+from baseline_model import read_corpus
+from extractors.CharacterExtractor import CharacterExtractor
+from extractors.LaughExtractor import LaughExtractor
 from extractors.LexiconExtractor import LexiconExtractor
 from extractors.PartsOfSpeechExtractor import PartsOfSpeechExtractor
+from extractors.PartsOfSpeechPatternExtractor import PartsOfSpeechPatternExtractor
 from extractors.SentimentSymbolExtractor import SentimentSymbolExtractor
-from util.Preprocessor import Preprocessor
 from extractors.TwitterExtractor import TwitterExtractor
-from baseline_model import read_corpus
+from util.Preprocessor import Preprocessor
 
-message_train, label_train = read_corpus("datasets/standard_train_dataset.csv")
-message_test, label_test = read_corpus("datasets/standard_test_dataset.csv")
+message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
+message_test, label_test = read_corpus("datasets/test_dataset_30.csv")
 
 preprocessor = Preprocessor(tweet_elements='normalize', stemming=False).preprocess
 
 pipeline = Pipeline([
     ('feats', FeatureUnion([
-        ('vect', TfidfVectorizer(use_idf=False,
-                                 preprocessor=preprocessor)),
+         ('vect', TfidfVectorizer(use_idf=False,
+                                  preprocessor=preprocessor)),
         ('sentiment_symbol', SentimentSymbolExtractor()),
-        ('parts_of_speech', PartsOfSpeechExtractor()),
-        ('lexicon', LexiconExtractor()),
-        #('twitter', TwitterExtractor())
+        ('parts_of_speech', PartsOfSpeechPatternExtractor()),
+        ('lexicon', LexiconExtractor())
+        # ('laugh', LaughExtractor())
+        # ('character', CharacterExtractor())
+        # ('twitter', TwitterExtractor())
     ])),
     ('clf', LinearSVC())
 ])
 
 
-l = 1000
+l = 999999
 
 pipeline.fit(message_train[:l], label_train[:l])
 

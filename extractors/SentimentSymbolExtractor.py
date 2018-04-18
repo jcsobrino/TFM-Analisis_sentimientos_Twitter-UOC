@@ -1,5 +1,6 @@
 import io
 
+from sklearn import preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from util.Preprocessor import Preprocessor
@@ -7,24 +8,26 @@ from util.Preprocessor import Preprocessor
 
 class SentimentSymbolExtractor(BaseEstimator, TransformerMixin):
 
-    _pos = io.open('sentiment-symbols/positive_symbols.txt', encoding='utf-8').read().splitlines()
-    _neg = io.open('sentiment-symbols/negative_symbols.txt', encoding='utf-8').read().splitlines()
-    _neu = io.open('sentiment-symbols/neutral_symbols.txt', encoding='utf-8').read().splitlines()
-    _processor = Preprocessor(tweet_elements='remove')
+    _preprocessor = Preprocessor(tweet_elements='remove')
 
     def __init__(self):
-        pass
+        _pos_symbols = self.file_lo_list('sentiment-symbols/positive_symbols.txt')
+        _neg_symbols = self.file_lo_list('sentiment-symbols/negative_symbols.txt')
+        _neu_symbols = self.file_lo_list('sentiment-symbols/neutral_symbols.txt')
 
     def transform(self, data, y=None):
         result = []
 
         for tweet in data:
-            tweet = self._processor.preprocess(tweet)
-            result.append([sum(tweet.count(e) for e in self._pos) + tweet.count('LAUGH'),
-                           sum(tweet.count(e) for e in self._neg),
-                           sum(tweet.count(e) for e in self._neu)])
+            tweet = self._preprocessor.preprocess(tweet)
+            result.append([sum(tweet.count(symbol) for symbol in self._pos_symbols),
+                           sum(tweet.count(symbol) for symbol in self._neg_symbols),
+                           sum(tweet.count(symbol) for symbol in self._neu_symbols)])
 
-        return result
+        return preprocessing.normalize(result)
 
     def fit(self, df, y=None):
         return self
+
+    def file_to_list(self, filename):
+        return io.open(filename, encoding='utf-8').read().splitlines()

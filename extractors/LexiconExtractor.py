@@ -1,61 +1,60 @@
 import io
-import re
-import string
 
 from nltk import TweetTokenizer
 from nltk.util import ngrams
+from sklearn import preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
-from collections import Counter
-
-from sklearn.feature_extraction import DictVectorizer
 
 from util.Preprocessor import Preprocessor
 
+
 class LexiconExtractor(BaseEstimator, TransformerMixin):
 
-    _vectorizer = None
-    _ngram_length = 3
-    _reverse = ['no', 'ni', 'tampoc', 'ningun']
+    NGRAM_LENGTH = 3
+    REVERSE_WORDS = ['no', 'ni', 'tampoc', 'ningun']
+
     _tokenizer = TweetTokenizer()
-    _neg = io.open('lexicon/negative_words.txt').read().splitlines()
-    _pos = io.open('lexicon/positive_words.txt').read().splitlines()
-    _processor = Preprocessor(tweet_elements='remove', stemming=True)
+    _preprocessor = Preprocessor(tweet_elements='remove', stemming=True)
 
     def __init__(self):
-        pass
+        self._neg_words = self.file_to_list('lexicon/negative_words.txt')
+        self._pos_words = self.file_to_list('lexicon/positive_words.txt')
 
     def transform(self, data, y=None):
-        result = [self.detect(tweet) for tweet in data]
-        if self._vectorizer == None :
-            self._vectorizer = DictVectorizer(sparse=False)
-            self._vectorizer.fit(result)
+        result = []
 
-        return self._vectorizer.transform(result)
+        for tweet in data:
+            tweet = self._preprocessor.preprocess(tweet)
+            result.append(self.count_polarity_words(tweet))
 
-    def detect(self, text):
-        res = []
-        aux = self._processor.preprocess(text)
-        aux = re.sub('[' + string.punctuation + ']', '', aux)
-        aux = list(ngrams(self._tokenizer.tokenize(aux), self._ngram_length, pad_left=True))
+        return preprocessing.normalize(result)
 
-        for ngram in aux:
-            pre_words = ngram[:self._ngram_length-1]
-            word = ngram[self._ngram_length-1]
-            #word = self._processor.stem(word)
+    def count_polarity_words(self, text):
+        num_pos_words = 0
+        num_neg_words = 0
 
-            if word in self._pos:
-                if any(w in pre_words for w in self._reverse):
-                    res.append("NEG")
+        list_ngrams = list(ngrams(self._tokenizer.tokenize(text), self.NGRAM_LENGTH, pad_left=True))
+
+        for ngram in list_ngrams:
+            pre_words = ngram[:self.NGRAM_LENGTH-1]
+            word = ngram[self.NGRAM_LENGTH-1]
+
+            if word in self._pos_words:
+                if any(w in pre_words for w in self.REVERSE_WORDS):
+                    num_neg_words +=1
                 else:
-                    res.append("POS")
+                    num_pos_words += 1
 
-            elif word in self._neg:
-                if any(w in pre_words for w in self._reverse):
-                    res.append("POS")
+            elif word in self._neg_words:
+                if any(w in pre_words for w in self.REVERSE_WORDS):
+                    num_pos_words += 1
                 else:
-                    res.append("NEG")
+                    num_neg_words += 1
 
-        return Counter(res)
+        return [num_pos_words, num_neg_words]
 
     def fit(self, df, y=None):
         return self
+
+    def file_to_list(self, filename):
+        return io.open(filename).read().splitlines()
