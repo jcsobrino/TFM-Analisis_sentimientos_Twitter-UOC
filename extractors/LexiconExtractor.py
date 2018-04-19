@@ -14,7 +14,7 @@ class LexiconExtractor(BaseEstimator, TransformerMixin):
     REVERSE_WORDS = ['no', 'ni', 'tampoc', 'ningun']
 
     _tokenizer = TweetTokenizer()
-    _preprocessor = Preprocessor(tweet_elements='remove', stemming=True)
+    _preprocessor = Preprocessor(twitter_features='remove', stemming=True)
 
     def __init__(self):
         self._neg_words = self.file_to_list('lexicon/negative_words.txt')

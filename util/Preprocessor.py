@@ -18,8 +18,8 @@ class Preprocessor:
 
     _stemmer = SnowballStemmer('spanish')
 
-    def __init__(self, tweet_elements=None, stemming=False):
-        self._tweet_elements = tweet_elements
+    def __init__(self, twitter_features=None, stemming=False):
+        self._twitter_features = twitter_features
         self._stemming = stemming
 
     def preprocess(self, message):
@@ -34,11 +34,11 @@ class Preprocessor:
         message = re.sub(r'(.)\1{2,}', r'\1\1', message)
         # normalized laughs
         message = self.normalize_laughs(message)
-        # remove slang
+        # translate slang
         for s,t in self.SLANG:
             message = re.sub(r'\b{0}\b'.format(s), t, message)
 
-        message = self.process_tweet_elements(message, self._tweet_elements)
+        message = self.process_twitter_features(message, self._twitter_features)
 
         if self._stemming:
             message = ' '.join(self._stemmer.stem(w) for w in word_tokenize(message))
@@ -46,11 +46,11 @@ class Preprocessor:
         return message
 
     @staticmethod
-    def process_tweet_elements(self, message, tweet_elements):
-        if tweet_elements == 'remove':
+    def process_twitter_features(self, message, twitter_features):
+        if twitter_features == 'remove':
             # remove mentions, hashtags and urls
             message = re.sub(r'(@|#|https?:)\S+', '', message)
-        elif tweet_elements == 'normalize':
+        elif twitter_features == 'normalize':
             # normalize mentions, hashtags and urls
             message = re.sub(r'@\S+', self.MENTION, message)
             message = re.sub(r'#\S+', self.HASHTAG, message)
@@ -58,6 +58,7 @@ class Preprocessor:
 
         return message
 
+    @staticmethod
     def stem(self, word):
         return self._stemmer.stem(word)
 
@@ -65,8 +66,5 @@ class Preprocessor:
     def normalize_laughs(self, message):
         return re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', self.LAUGH, message.lower())
 
-    def __repr__(self):
-        return "Preprocessor([tweet_elements={0}, stemming={1}])".format(self._tweet_elements, self._stemming)
-
     def __str__(self):
-        return "Preprocessor([tweet_elements={0}, stemming={1}])".format(self._tweet_elements, self._stemming)
+        return "Preprocessor([twitter_features={0}, stemming={1}])".format(self._twitter_features, self._stemming)

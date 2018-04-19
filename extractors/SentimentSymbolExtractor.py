@@ -8,7 +8,7 @@ from util.Preprocessor import Preprocessor
 
 class SentimentSymbolExtractor(BaseEstimator, TransformerMixin):
 
-    _preprocessor = Preprocessor(tweet_elements='remove')
+    _preprocessor = Preprocessor(twitter_features='remove')
 
     def __init__(self):
         _pos_symbols = self.file_lo_list('sentiment-symbols/positive_symbols.txt')

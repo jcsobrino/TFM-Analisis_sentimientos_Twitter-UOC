@@ -1,8 +1,7 @@
 import os
 from nltk import TweetTokenizer
 from nltk.tag.stanford import StanfordPOSTagger
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction import DictVectorizer
+import hashlib
 
 os.environ['JAVAHOME'] = "C:/Program Files (x86)/Java/jre1.8.0_161/bin/java.exe"
 
@@ -15,7 +14,7 @@ class PartsOfSpeechHelper:
     _postag = StanfordPOSTagger(model_filename=PATH_TO_MODEL, path_to_jar=PATH_TO_JAR)
 
     def __init__(self):
-        self._cache = self.read_precalculate_postags('stanford-postagger/precalculated_corpus_postags.txt')
+        self._cache = self.load_precalculate_postags('stanford-postagger/precalculated_corpus_postags.txt')
 
     def postag(self, tokens):
         key = self.key(tokens)
@@ -28,12 +27,18 @@ class PartsOfSpeechHelper:
 
         return parts_of_speech
 
-    def read_precalculate_postags(self, filename):
+    def load_precalculate_postags(self, filename):
         data = []
         with open(filename, "r", encoding="utf-8") as f:
             for line in f:
                 data.append(eval(line))
-        return dict([(' '.join([h[0] for h in d]), d) for d in data])
+        return dict([(self.key([w for w,t in pos_tags]), pos_tags) for pos_tags in data])
 
-    def key(self, text):
-        return None
+    def key(self, tokens):
+        return hashlib.md5(''.join(tokens).encode('utf-8')).hexdigest()
+
+    def save_cache_in_file(self, filename):
+        with open(filename, "a", encoding="utf-8") as file:
+            for k,d in self._cache:
+                file.write(repr(k))
+                file.write('\n')

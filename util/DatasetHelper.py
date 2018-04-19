@@ -76,6 +76,17 @@ class DatasetHelper:
         test_data = [d for d in data if d[0] in codes_test]
         return train_data, test_data
 
+    @staticmethod
+    def cvs_to_lists(filename):
+        messages = []
+        labels = []
+        with open(filename, 'r', encoding='utf-8') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            for row in reader:
+                messages.append(row[1])
+                labels.append(row[2])
+        return messages, labels
+
 #qrel = DatasetHelper.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
 test = []

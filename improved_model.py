@@ -16,7 +16,7 @@ from util.Preprocessor import Preprocessor
 message_train, label_train = read_corpus("datasets/train_dataset_30.csv")
 message_test, label_test = read_corpus("datasets/test_dataset_30.csv")
 
-preprocessor = Preprocessor(tweet_elements='normalize', stemming=False).preprocess
+preprocessor = Preprocessor(twitter_features='normalize', stemming=False).preprocess
 
 pipeline = Pipeline([
     ('feats', FeatureUnion([

@@ -15,7 +15,7 @@ class CharacterExtractor(BaseEstimator, TransformerMixin):
         result = []
 
         for tweet in data:
-            tweet = Preprocessor.process_tweet_elements(tweet, tweet_elements="remove")
+            tweet = Preprocessor.process_twitter_features(tweet, tweet_elements="remove")
             result.append([
                 tweet.count('!'),
                 int(bool(re.search(r"(\w)\1{2,}", tweet))),
