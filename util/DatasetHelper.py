@@ -89,10 +89,10 @@ class DatasetHelper:
 
 #qrel = DatasetHelper.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
 
-test = []
-train = []
-test.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
-train.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
+# test = []
+# train = []
+# test.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
+# train.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
 # data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-development-tagged.xml"))
 # data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-test.xml", qrel))
 # data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-train-tagged.xml"))
@@ -101,5 +101,5 @@ train.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-
 # train, test = DatasetHelper.generate_train_test_subsets(data, size=0.3)
 
 #DatasetHelper.list_to_csv(data, 'datasets/global_dataset.csv')
-DatasetHelper.list_to_csv(train, '../datasets/standard_train_dataset.csv')
-DatasetHelper.list_to_csv(test, '../datasets/standard_test_dataset.csv')
+# DatasetHelper.list_to_csv(train, '../datasets/standard_train_dataset.csv')
+# DatasetHelper.list_to_csv(test, '../datasets/standard_test_dataset.csv')

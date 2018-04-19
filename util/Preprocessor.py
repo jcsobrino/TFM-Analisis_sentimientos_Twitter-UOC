@@ -6,6 +6,8 @@ from nltk.stem import SnowballStemmer
 
 class Preprocessor:
 
+    NORMALIZE = 'normalize'
+    REMOVE = 'remove'
     MENTION = 'TWMENTION'
     HASHTAG = 'TWHASHTAG'
     URL = 'TWURL'
@@ -46,25 +48,27 @@ class Preprocessor:
         return message
 
     @staticmethod
-    def process_twitter_features(self, message, twitter_features):
-        if twitter_features == 'remove':
+    def process_twitter_features(message, twitter_features):
+        if twitter_features == Preprocessor.REMOVE:
             # remove mentions, hashtags and urls
             message = re.sub(r'(@|#|https?:)\S+', '', message)
-        elif twitter_features == 'normalize':
+        elif twitter_features == Preprocessor.NORMALIZE:
             # normalize mentions, hashtags and urls
-            message = re.sub(r'@\S+', self.MENTION, message)
-            message = re.sub(r'#\S+', self.HASHTAG, message)
-            message = re.sub(r'https?:\S+', self.URL, message)
+            message = re.sub(r'@\S+', Preprocessor.MENTION, message)
+            message = re.sub(r'#\S+', Preprocessor.HASHTAG, message)
+            message = re.sub(r'https?:\S+', Preprocessor.URL, message)
 
         return message
 
-    @staticmethod
     def stem(self, word):
         return self._stemmer.stem(word)
 
     @staticmethod
-    def normalize_laughs(self, message):
-        return re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', self.LAUGH, message.lower())
+    def normalize_laughs(message):
+        return re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message.lower())
 
     def __str__(self):
+        return "Preprocessor([twitter_features={0}, stemming={1}])".format(self._twitter_features, self._stemming)
+
+    def __repr__(self):
         return "Preprocessor([twitter_features={0}, stemming={1}])".format(self._twitter_features, self._stemming)

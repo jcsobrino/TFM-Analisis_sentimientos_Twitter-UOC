@@ -16,7 +16,7 @@ from util.DatasetHelper import DatasetHelper
 from util.Preprocessor import Preprocessor
 
 # corpus data
-message, label = DatasetHelper.read_corpus("datasets/train_dataset_30.csv")
+message, label = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 
 # stop words
 spanish_stopwords = stopwords.words('spanish')
@@ -38,7 +38,7 @@ pipeline = Pipeline([('vectorizer', None),
                      ('classifier', None)])
 
 # Tokenizer
-tokenizer = TweetTokenizer()
+tokenizer = TweetTokenizer().tokenize
 
 # feature weights
 bow_binary_term_ocurrences = CountVectorizer(binary=True, tokenizer=tokenizer)
@@ -51,10 +51,10 @@ parameters = [{
                    bow_absolute_ocurrences,
                    bow_term_frequency,
                    bow_tfidf),
-    'vectorizer__preprocessor': (Preprocessor(twitter_features='remove').preprocess,
-                                 Preprocessor(twitter_features='remove', stemming=True).preprocess,
-                                 Preprocessor(twitter_features='normalized').preprocess,
-                                 Preprocessor(twitter_features='normalized', stemming=True).preprocess),
+    'vectorizer__preprocessor': (Preprocessor(twitter_features=Preprocessor.REMOVE).preprocess,
+                                 Preprocessor(twitter_features=Preprocessor.REMOVE, stemming=True).preprocess,
+                                 Preprocessor(twitter_features=Preprocessor.NORMALIZE).preprocess,
+                                 Preprocessor(twitter_features=Preprocessor.NORMALIZE, stemming=True).preprocess),
     'vectorizer__stop_words': (None, spanish_stopwords),
     'classifier': (MultinomialNB(), LinearSVC(), DecisionTreeClassifier(), KNeighborsClassifier())
 }]
@@ -62,6 +62,7 @@ parameters = [{
 if __name__ == '__main__':
     skf = StratifiedKFold(n_splits=10, shuffle=True)
     grid_search = GridSearchCV(pipeline, param_grid=parameters, n_jobs=-1, cv=skf, verbose=5, scoring=scoring,
-                               refit='f1_weighted')
+                               refit='f1_weighted', return_train_score=False)
     grid_search.fit(message, label)
+    print("best_score:", grid_search.best_score_)
     pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time()))+'.csv', quoting=csv.QUOTE_NONNUMERIC)
