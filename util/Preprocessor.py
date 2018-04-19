@@ -1,6 +1,6 @@
 import re
 
-from nltk import word_tokenize
+from nltk import TweetTokenizer
 from nltk.stem import SnowballStemmer
 
 
@@ -8,17 +8,18 @@ class Preprocessor:
 
     NORMALIZE = 'normalize'
     REMOVE = 'remove'
-    MENTION = 'TWMENTION'
-    HASHTAG = 'TWHASHTAG'
-    URL = 'TWURL'
-    LAUGH = 'TWLAUGH'
+    MENTION = 'twmention'
+    HASHTAG = 'twhashtag'
+    URL = 'twurl'
+    LAUGH = 'twlaugh'
 
     DIACRITICAL_VOWELS = [('á','a'), ('é','e'), ('í','i'), ('ó','o'), ('ú','u'), ('ü','u')]
     SLANG = [('d','de'), ('[qk]','que'), ('xo','pero'), ('xa', 'para'), ('[xp]q','porque'),('es[qk]', 'es que'),
               ('fvr','favor'),('(xfa|xf|pf|plis|pls|porfa)', 'por favor'), ('dnd','donde'), ('lol', '_laugh'), ('tb', 'también'),
-              ('(tq|tk)', 'te quiero'), ('(tqm|tkm)', 'te quiero mucho'), ('x','por')]
+              ('(tq|tk)', 'te quiero'), ('(tqm|tkm)', 'te quiero mucho'), ('x','por'), ('\+','mas')]
 
     _stemmer = SnowballStemmer('spanish')
+    _tokenizer = TweetTokenizer().tokenize
 
     def __init__(self, twitter_features=None, stemming=False):
         self._twitter_features = twitter_features
@@ -43,7 +44,7 @@ class Preprocessor:
         message = self.process_twitter_features(message, self._twitter_features)
 
         if self._stemming:
-            message = ' '.join(self._stemmer.stem(w) for w in word_tokenize(message))
+            message = ' '.join(self._stemmer.stem(w) for w in self._tokenizer(message))
 
         return message
 

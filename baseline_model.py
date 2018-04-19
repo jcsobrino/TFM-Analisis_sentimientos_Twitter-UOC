@@ -65,4 +65,5 @@ if __name__ == '__main__':
                                refit='f1_weighted', return_train_score=False)
     grid_search.fit(message, label)
     print("best_score:", grid_search.best_score_)
-    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time()))+'.csv', quoting=csv.QUOTE_NONNUMERIC)
+    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time())) + '.csv',
+                                                 quoting=csv.QUOTE_NONNUMERIC)
