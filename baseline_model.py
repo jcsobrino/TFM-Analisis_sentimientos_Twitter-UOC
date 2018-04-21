@@ -1,7 +1,6 @@
 import csv
 
 import pandas as pd
-import time
 from nltk import TweetTokenizer
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -42,13 +41,13 @@ tokenizer = TweetTokenizer().tokenize
 
 # feature weights
 bow_binary_term_ocurrences = CountVectorizer(binary=True, tokenizer=tokenizer)
-bow_absolute_ocurrences = CountVectorizer(binary=False, tokenizer=tokenizer)
+bow_absolute_term_ocurrences = CountVectorizer(binary=False, tokenizer=tokenizer)
 bow_term_frequency = TfidfVectorizer(use_idf=False, tokenizer=tokenizer)
 bow_tfidf = TfidfVectorizer(use_idf=True, tokenizer=tokenizer)
 
 parameters = [{
     'vectorizer': (bow_binary_term_ocurrences,
-                   bow_absolute_ocurrences,
+                   bow_absolute_term_ocurrences,
                    bow_term_frequency,
                    bow_tfidf),
     'vectorizer__preprocessor': (Preprocessor(twitter_features=Preprocessor.REMOVE).preprocess,
@@ -56,7 +55,7 @@ parameters = [{
                                  Preprocessor(twitter_features=Preprocessor.NORMALIZE).preprocess,
                                  Preprocessor(twitter_features=Preprocessor.NORMALIZE, stemming=True).preprocess),
     'vectorizer__stop_words': (None, spanish_stopwords),
-    'classifier': (MultinomialNB(), LinearSVC(), DecisionTreeClassifier(), KNeighborsClassifier())
+    'classifier': (MultinomialNB(), LinearSVC, DecisionTreeClassifier(), KNeighborsClassifier())
 }]
 
 if __name__ == '__main__':
@@ -65,5 +64,5 @@ if __name__ == '__main__':
                                refit='f1_weighted', return_train_score=False)
     grid_search.fit(message, label)
     print("best_score:", grid_search.best_score_)
-    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf=str(int(time.time())) + '.csv',
+    pd.DataFrame(grid_search.cv_results_).to_csv(path_or_buf='baseline.csv',
                                                  quoting=csv.QUOTE_NONNUMERIC)
