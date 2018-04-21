@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as etree
 import csv
+from collections import Counter
 
 from sklearn.model_selection import train_test_split
 
@@ -87,19 +88,18 @@ class DatasetHelper:
                 labels.append(row[2])
         return messages, labels
 
-#qrel = DatasetHelper.gold_standard_to_dict("datasets/intertass-sentiment.qrel")
+# qrel = DatasetHelper.gold_standard_to_dict("../datasets/tass/intertass-sentiment.qrel")
 
-# test = []
-# train = []
-# test.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
-# train.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
-# data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-development-tagged.xml"))
-# data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-test.xml", qrel))
-# data.extend(DatasetHelper.intertass_tass_to_list("datasets/intertass-train-tagged.xml"))
-# data.extend(DatasetHelper.politics_tass_to_list("datasets/politics-test-tagged.xml"))
+# data = []
+# data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
+# data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
+# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-development-tagged.xml"))
+# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-test.xml", qrel))
+# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-train-tagged.xml"))
+# data.extend(DatasetHelper.politics_tass_to_list("../datasets/tass/politics-test-tagged.xml"))
 
 # train, test = DatasetHelper.generate_train_test_subsets(data, size=0.3)
 
-#DatasetHelper.list_to_csv(data, 'datasets/global_dataset.csv')
+# DatasetHelper.list_to_csv(data, 'datasets/global_dataset.csv')
 # DatasetHelper.list_to_csv(train, '../datasets/standard_train_dataset.csv')
 # DatasetHelper.list_to_csv(test, '../datasets/standard_test_dataset.csv')
