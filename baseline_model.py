@@ -55,7 +55,7 @@ parameters = [{
                                  Preprocessor(twitter_features=Preprocessor.NORMALIZE).preprocess,
                                  Preprocessor(twitter_features=Preprocessor.NORMALIZE, stemming=True).preprocess),
     'vectorizer__stop_words': (None, spanish_stopwords),
-    'classifier': (MultinomialNB(), LinearSVC, DecisionTreeClassifier(), KNeighborsClassifier())
+    'classifier': (MultinomialNB(), LinearSVC, DecisionTreeClassifier(), KNeighborsClassifier(n_neighbors=100))
 }]
 
 if __name__ == '__main__':

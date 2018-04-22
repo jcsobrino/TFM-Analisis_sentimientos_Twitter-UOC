@@ -15,7 +15,7 @@ class Preprocessor:
 
     DIACRITICAL_VOWELS = [('á','a'), ('é','e'), ('í','i'), ('ó','o'), ('ú','u'), ('ü','u')]
     SLANG = [('d','de'), ('[qk]','que'), ('xo','pero'), ('xa', 'para'), ('[xp]q','porque'),('es[qk]', 'es que'),
-              ('fvr','favor'),('(xfa|xf|pf|plis|pls|porfa)', 'por favor'), ('dnd','donde'), ('lol', '_laugh'), ('tb', 'también'),
+              ('fvr','favor'),('(xfa|xf|pf|plis|pls|porfa)', 'por favor'), ('dnd','donde'), ('tb', 'también'),
               ('(tq|tk)', 'te quiero'), ('(tqm|tkm)', 'te quiero mucho'), ('x','por'), ('\+','mas')]
 
     _stemmer = SnowballStemmer('spanish')
@@ -66,7 +66,9 @@ class Preprocessor:
 
     @staticmethod
     def normalize_laughs(message):
-        return re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message.lower())
+        message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message.lower())
+        message = re.sub(r'\b(juas+|lol)\b', Preprocessor.LAUGH, message)
+        return message
 
     def __str__(self):
         return "Preprocessor([twitter_features={0}, stemming={1}])".format(self._twitter_features, self._stemming)
