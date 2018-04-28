@@ -61,8 +61,8 @@ class Preprocessor:
 
         return message
 
-    def stem(self, word):
-        return self._stemmer.stem(word)
+    # def stem(self, word):
+    #     return self._stemmer.stem(word)
 
     @staticmethod
     def normalize_laughs(message):

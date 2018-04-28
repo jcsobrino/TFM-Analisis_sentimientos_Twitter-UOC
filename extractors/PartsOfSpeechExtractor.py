@@ -8,10 +8,10 @@ from sklearn.feature_extraction import DictVectorizer
 class PartsOfSpeechExtractor(BaseEstimator, TransformerMixin):
 
     _vectorizer = None
-    _tokenizer = TweetTokenizer()
+    _tokenizer = TweetTokenizer(reduce_len=True)
 
-    def __init__(self, posHelper):
-        self._pos_helper = posHelper
+    def __init__(self, pos_helper):
+        self._pos_helper = pos_helper
 
     def transform(self, data, y=None):
         result = []
