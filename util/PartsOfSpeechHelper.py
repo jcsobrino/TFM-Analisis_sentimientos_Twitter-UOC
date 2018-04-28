@@ -14,7 +14,7 @@ class PartsOfSpeechHelper:
     _postag = StanfordPOSTagger(model_filename=PATH_TO_MODEL, path_to_jar=PATH_TO_JAR)
 
     def __init__(self):
-        self._cache = self.load_file_into_cache('stanford-postagger/precalculated_ud_postags.plk')
+        self.load_file_into_cache('stanford-postagger/precalculated_ud_postags.pkl')
 
     def pos_tag(self, tokens):
         key = self.key(tokens)

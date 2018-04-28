@@ -28,7 +28,7 @@ class PartsOfSpeechExtractor(BaseEstimator, TransformerMixin):
     def pos_tag(self, tweet):
         tokens = self._tokenizer.tokenize(tweet)
         pos_tweet = self._pos_helper.pos_tag(tokens)
-        return Counter([p[0] for p in pos_tweet])
+        return Counter([pos[1] for pos in pos_tweet])
 
     def fit(self, df, y=None):
         return self

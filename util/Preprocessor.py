@@ -61,9 +61,6 @@ class Preprocessor:
 
         return message
 
-    # def stem(self, word):
-    #     return self._stemmer.stem(word)
-
     @staticmethod
     def normalize_laughs(message):
         message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message.lower())
