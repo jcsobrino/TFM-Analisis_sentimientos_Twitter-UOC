@@ -1,27 +1,32 @@
-import re
 from collections import Counter
 
+from nltk import TweetTokenizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction import DictVectorizer
 
+from util.PartsOfSpeechHelper import PartsOfSpeechHelper
 from util.Preprocessor import Preprocessor
 
 
 class PartsOfSpeechPatternExtractor(BaseEstimator, TransformerMixin):
 
-    POS_PATTERNS = ['na', 'nn', 'an', 'npn', 'vn', 'vpn']
+    POS_PATTERNS = [('NOUN','ADJ'), ('NOUN','NOUN'), ('ADJ','NOUN'), ('VERB','NOUN'), ('AUX','NOUN'),
+                    ('NOUN','PRON','NOUN'), ('VERB','PRON','NOUN'), ('AUX','PRON','NOUN')]
+    IGNORE_TAGS = ['PUNCT']
 
     _vectorizer = None
-    _processor = Preprocessor()
+    _tokenizer = TweetTokenizer(reduce_len=True)
+    _processor = Preprocessor(stemming=True)
+    _pos_helper = PartsOfSpeechHelper()
 
-    def __init__(self, posHelper):
-        self._pos_helper = posHelper
+    def __init__(self):
+        pass
     
     def transform(self, data, y=None):
         result = []
 
         for tweet in data:
-            result.append(self.pos_tag(tweet))
+            result.append(self.get_patterns(tweet))
 
         if self._vectorizer == None :
             self._vectorizer = DictVectorizer(sparse=False)
@@ -29,32 +34,29 @@ class PartsOfSpeechPatternExtractor(BaseEstimator, TransformerMixin):
 
         return self._vectorizer.transform(result)
 
-    def pos_tag(self, tweet):
+    def get_patterns(self, tweet):
         result = []
         tokens = self._tokenizer.tokenize(tweet)
-        pos_tweet = self._pos_helper.pos_tag(tokens)
-        words = [w for w,t in pos_tweet]
-        pos_tags = ''.join([t for p,t in pos_tweet])
+        pos_tags = self._pos_helper.pos_tag(tokens)
+        if len(pos_tags) > 1:
+            pos_tags = [p for p in pos_tags if p[1] not in self.IGNORE_TAGS]
+            words, tags = zip(*pos_tags)
 
-        for pattern in self._patters:
-            x = [(m.start(0), m.end(0)) for m in re.finditer(pattern, pos_tags)]
-            for i,j in x:
-                result.append('_'.join(words[i:j]).lower())
+            for pattern in self.POS_PATTERNS:
+                found = self.find_sublist(list(pattern), list(tags))
+                for i,j in found:
+                    result.append(self._processor.preprocess(' '.join(words[i:j])))
 
         return Counter(result)
 
-    def cosa(self, tweet):
-        res = []
-        pos = self.get_parts_of_speech(tweet)
-        words = [w for w,t in pos]
-        my_p = ''.join([p[1][0] for p in pos])
-
-        for pattern in self._patters:
-            x = [(m.start(0), m.end(0)) for m in re.finditer(pattern, my_p)]
-            for i,j in x:
-                res.append('_'.join(words[i:j]).lower())
-
-        return Counter(res)
-
     def fit(self, df, y=None):
         return self
+
+    def find_sublist(self, sl, l):
+        results = []
+        sll = len(sl)
+        for ind in (i for i, e in enumerate(l) if e == sl[0]):
+            if l[ind:ind + sll] == sl:
+                results.append((ind, ind + sll))
+
+        return results
