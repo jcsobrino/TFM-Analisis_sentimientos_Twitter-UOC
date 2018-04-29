@@ -1,4 +1,5 @@
 import re
+from itertools import groupby
 
 from sklearn import preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -18,11 +19,18 @@ class CharacterExtractor(BaseEstimator, TransformerMixin):
             tweet = Preprocessor.process_twitter_features(tweet, twitter_features=Preprocessor.REMOVE)
             result.append([
                 tweet.count('!'),
-                int(bool(re.search(r"(\w)\1{2,}", tweet))),
-                len(re.findall(r'[A-Z]', tweet))/len(tweet) if len(tweet) > 0 else 0
+                self._max_consecutive_equals_characteres(tweet),
+                len(re.findall(r'[A-Z]', tweet))
             ])
 
         return preprocessing.normalize(result)
 
     def fit(self, df, y=None):
         return self
+
+    def _max_consecutive_equals_characteres(self, text):
+        if len(text) == 0:
+            return 0
+
+        groups = groupby(text)
+        return max(num for char, num in [(char, sum(1 for _ in group)) for char, group in groups])

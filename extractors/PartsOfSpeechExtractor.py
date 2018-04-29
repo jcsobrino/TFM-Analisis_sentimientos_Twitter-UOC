@@ -7,6 +7,7 @@ from sklearn.feature_extraction import DictVectorizer
 
 class PartsOfSpeechExtractor(BaseEstimator, TransformerMixin):
 
+    TAGS = ['PUNCT', 'CCONJ']
     _vectorizer = None
     _tokenizer = TweetTokenizer(reduce_len=True)
 
@@ -28,7 +29,7 @@ class PartsOfSpeechExtractor(BaseEstimator, TransformerMixin):
     def pos_tag(self, tweet):
         tokens = self._tokenizer.tokenize(tweet)
         pos_tweet = self._pos_helper.pos_tag(tokens)
-        return Counter([pos[1] for pos in pos_tweet])
+        return Counter([t for w,t in pos_tweet if t not in self.TAGS])
 
     def fit(self, df, y=None):
         return self

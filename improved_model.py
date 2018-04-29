@@ -19,6 +19,10 @@ from util.Preprocessor import Preprocessor
 message_train, label_train = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 message_test, label_test = DatasetHelper.cvs_to_lists("datasets/test_dataset_30.csv")
 
+#message_train, label_train = DatasetHelper.cvs_to_lists("datasets/standard_train_dataset.csv")
+#message_test, label_test = DatasetHelper.cvs_to_lists("datasets/standard_test_dataset.csv")
+
+
 # Tokenizer
 tokenizer = TweetTokenizer().tokenize
 
@@ -31,18 +35,19 @@ bow_term_frequency = TfidfVectorizer(use_idf=False, tokenizer=tokenizer, preproc
 # Parts of speech helper
 pos_helper = PartsOfSpeechHelper()
 
+cls = LinearSVC()
 pipeline = Pipeline([
     ('feats', FeatureUnion([
          ('vectorizer', bow_term_frequency),
-         ('sentiment_symbol', SentimentSymbolExtractor()),
-         ('parts_of_speech', PartsOfSpeechExtractor(pos_helper=pos_helper)),
+         #('sentiment_symbol', SentimentSymbolExtractor()),
+         #('parts_of_speech', PartsOfSpeechExtractor(pos_helper=pos_helper)),
          # ('parts_of_speech_pattern', PartsOfSpeechPatternExtractor()),
-         ('lexicon', LexiconExtractor()),
-         ('laugh', LaughExtractor()),
-         ('character', CharacterExtractor()),
-         ('twitter', TwitterExtractor())
+         #('lexicon', LexiconExtractor()),
+         #('laugh', LaughExtractor()),
+         #('character', CharacterExtractor()),
+         #('twitter', TwitterExtractor())
     ])),
-    ('classifier', LinearSVC())
+    ('classifier', cls)
 ])
 
 

@@ -50,21 +50,26 @@ class Preprocessor:
 
     @staticmethod
     def process_twitter_features(message, twitter_features):
+        message = re.sub(r'[\.\,]http','. http', message, flags=re.IGNORECASE)
+        message = re.sub(r'[\.\,]#', '. #', message)
+        message = re.sub(r'[\.\,]@', '. @', message)
+
         if twitter_features == Preprocessor.REMOVE:
             # remove mentions, hashtags and urls
-            message = re.sub(r'(@|#|https?:)\S+', '', message)
+            message = re.sub(r'((?<=\s)|(?<=\A))(@|#)\S+', '', message)
+            message = re.sub(r'\b(https?:\S+)\b', '', message, flags=re.IGNORECASE)
         elif twitter_features == Preprocessor.NORMALIZE:
             # normalize mentions, hashtags and urls
-            message = re.sub(r'@\S+', Preprocessor.MENTION, message)
-            message = re.sub(r'#\S+', Preprocessor.HASHTAG, message)
-            message = re.sub(r'https?:\S+', Preprocessor.URL, message)
+            message = re.sub(r'((?<=\s)|(?<=\A))@\S+', Preprocessor.MENTION, message)
+            message = re.sub(r'((?<=\s)|(?<=\A))#\S+', Preprocessor.HASHTAG, message)
+            message = re.sub(r'\b(https?:\S+)\b', Preprocessor.URL, message, flags=re.IGNORECASE)
 
         return message
 
     @staticmethod
     def normalize_laughs(message):
-        message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message.lower())
-        message = re.sub(r'\b(juas+|lol)\b', Preprocessor.LAUGH, message)
+        message = re.sub(r'\b(?=\w*[j])[aeiouj]{4,}\b', Preprocessor.LAUGH, message, flags=re.IGNORECASE)
+        message = re.sub(r'\b(juas+|lol)\b', Preprocessor.LAUGH, message, flags=re.IGNORECASE)
         return message
 
     def __str__(self):
