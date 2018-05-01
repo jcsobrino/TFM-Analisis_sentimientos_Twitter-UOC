@@ -16,7 +16,7 @@ from util.DatasetHelper import DatasetHelper
 from util.PartsOfSpeechHelper import PartsOfSpeechHelper
 from util.Preprocessor import Preprocessor
 
-# global corpus
+# global corpus 30% for training
 message_train, label_train = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 message_test, label_test = DatasetHelper.cvs_to_lists("datasets/test_dataset_30.csv")
 

@@ -14,7 +14,7 @@ from sklearn.tree import DecisionTreeClassifier
 from util.DatasetHelper import DatasetHelper
 from util.Preprocessor import Preprocessor
 
-# global corpus
+# global corpus 30% for cross-validation
 message, label = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 
 # spanish stop words
