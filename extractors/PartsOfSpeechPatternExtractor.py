@@ -45,7 +45,9 @@ class PartsOfSpeechPatternExtractor(BaseEstimator, TransformerMixin):
             for pattern in self.POS_PATTERNS:
                 found = self.find_sublist(list(pattern), list(tags))
                 for i,j in found:
-                    result.append(self._processor.preprocess(' '.join(words[i:j])))
+                    # Added patterns instead of tokens
+                    result.append('_'.join(list(pattern)))
+                    # result.append(self._processor.preprocess(' '.join(words[i:j])))
 
         return Counter(result)
 

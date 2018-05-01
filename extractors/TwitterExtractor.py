@@ -1,7 +1,8 @@
+from sklearn import preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from util.Preprocessor import Preprocessor
-from sklearn import preprocessing
+
 
 class TwitterExtractor(BaseEstimator, TransformerMixin):
 

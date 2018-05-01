@@ -1,6 +1,5 @@
-import xml.etree.ElementTree as etree
 import csv
-from collections import Counter
+import xml.etree.ElementTree as etree
 
 from sklearn.model_selection import train_test_split
 

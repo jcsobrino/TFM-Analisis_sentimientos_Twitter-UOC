@@ -1,5 +1,6 @@
 from nltk import TweetTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import VarianceThreshold, SelectKBest, mutual_info_classif, chi2, f_classif
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.svm import LinearSVC
@@ -15,11 +16,11 @@ from util.DatasetHelper import DatasetHelper
 from util.PartsOfSpeechHelper import PartsOfSpeechHelper
 from util.Preprocessor import Preprocessor
 
-# global corpus data
+# global corpus
 message_train, label_train = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 message_test, label_test = DatasetHelper.cvs_to_lists("datasets/test_dataset_30.csv")
 
-# corpus standard TASS 2012
+# standard corpus TASS 2012
 #message_train, label_train = DatasetHelper.cvs_to_lists("datasets/standard_train_dataset.csv")
 #message_test, label_test = DatasetHelper.cvs_to_lists("datasets/standard_test_dataset.csv")
 
@@ -34,15 +35,16 @@ bow_term_frequency = TfidfVectorizer(use_idf=False, tokenizer=tokenizer, preproc
 
 pipeline = Pipeline([
     ('feats', FeatureUnion([
-         ('vectorizer', bow_term_frequency),
-         ('sentiment_symbol', SentimentSymbolExtractor()),
-         ('parts_of_speech', PartsOfSpeechExtractor()),
-         #('parts_of_speech_pattern', PartsOfSpeechPatternExtractor()),
-         ('lexicon', LexiconExtractor()),
-         ('laugh', LaughExtractor()),
-         ('character', CharacterExtractor()),
-         ('twitter', TwitterExtractor())
+           ('vectorizer', bow_term_frequency),
+           ('sentiment_symbol', SentimentSymbolExtractor()),
+           ('parts_of_speech', PartsOfSpeechExtractor()),
+           ('parts_of_speech_pattern', PartsOfSpeechPatternExtractor()),
+           ('lexicon', LexiconExtractor()),
+           ('laugh', LaughExtractor()),
+           ('character', CharacterExtractor()),
+           ('twitter', TwitterExtractor())
     ])),
+    ("fs", SelectKBest(score_func=chi2, k=7000)),
     ('classifier', LinearSVC(C=0.5))
 ])
 

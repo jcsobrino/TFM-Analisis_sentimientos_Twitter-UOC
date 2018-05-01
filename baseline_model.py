@@ -14,10 +14,10 @@ from sklearn.tree import DecisionTreeClassifier
 from util.DatasetHelper import DatasetHelper
 from util.Preprocessor import Preprocessor
 
-# corpus data
+# global corpus
 message, label = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
 
-# stop words
+# spanish stop words
 spanish_stopwords = stopwords.words('spanish')
 
 # metrics
