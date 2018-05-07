@@ -87,18 +87,19 @@ class DatasetHelper:
                 labels.append(row[2])
         return messages, labels
 
-# qrel = DatasetHelper.gold_standard_to_dict("../datasets/tass/intertass-sentiment.qrel")
 
-# data = []
-# data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
-# data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
-# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-development-tagged.xml"))
-# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-test.xml", qrel))
-# data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-train-tagged.xml"))
-# data.extend(DatasetHelper.politics_tass_to_list("../datasets/tass/politics-test-tagged.xml"))
+qrel = DatasetHelper.gold_standard_to_dict("../datasets/tass/intertass-sentiment.qrel")
 
-# train, test = DatasetHelper.generate_train_test_subsets(data, size=0.3)
+data = []
+data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-test-tagged-3l.xml"))
+data.extend(DatasetHelper.general_tass_to_list("../datasets/tass/general-train-tagged-3l.xml"))
+data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-development-tagged.xml"))
+data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-test.xml", qrel))
+data.extend(DatasetHelper.intertass_tass_to_list("../datasets/tass/intertass-train-tagged.xml"))
+data.extend(DatasetHelper.politics_tass_to_list("../datasets/tass/politics-test-tagged.xml"))
 
-# DatasetHelper.list_to_csv(data, 'datasets/global_dataset.csv')
-# DatasetHelper.list_to_csv(train, '../datasets/standard_train_dataset.csv')
-# DatasetHelper.list_to_csv(test, '../datasets/standard_test_dataset.csv')
+train, test = DatasetHelper.generate_train_test_subsets(data, size=0.3)
+
+DatasetHelper.list_to_csv(data, '../datasets/global_dataset.csv')
+DatasetHelper.list_to_csv(train, '../datasets/train_dataset_30.csv')
+DatasetHelper.list_to_csv(test, '../datasets/test_dataset_30.csv')
