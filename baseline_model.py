@@ -15,7 +15,7 @@ from util.DatasetHelper import DatasetHelper
 from util.Preprocessor import Preprocessor
 
 # global corpus 30% for cross-validation
-message, label = DatasetHelper.cvs_to_lists("datasets/train_dataset_30.csv")
+message, label = DatasetHelper.csv_to_lists("datasets/train_dataset_30.csv")
 
 # spanish stop words
 spanish_stopwords = stopwords.words('spanish')

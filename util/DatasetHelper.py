@@ -77,7 +77,7 @@ class DatasetHelper:
         return train_data, test_data
 
     @staticmethod
-    def cvs_to_lists(filename):
+    def csv_to_lists(filename):
         messages = []
         labels = []
         with open(filename, 'r', encoding='utf-8') as csvfile:
