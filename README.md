@@ -1,4 +1,4 @@
-"TFM - UOC - Análisis de sentimientos en Twitter" 
+# TFM - UOC - Análisis de sentimientos en Twitter 
 
 El Análisis de Sentimientos es un área de investigación enmarcada dentro del campo del Procesamiento del Lenguaje Natural y cuyo objetivo fundamental es el tratamiento computacional de opiniones, sentimientos y subjetividad en textos. En este contexto, una opinión es una valoración positiva o negativa acerca de un producto, servicio, organización, persona o cualquier otro tipo de ente sobre la que se expresa un texto determinado. La llegada de la Web 2.0 y la popularización de redes sociales de microblogging como Twitter han catapultado este campo de investigación de la Inteligencia Artificial hacia las más altas cotas de interés y notoriedad debido a la indiscutible importancia que supone el poder obtener el grado de valoración de miles de personas en cada instante para empresas, organizaciones, gobiernos y consumidores.
 
